@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contador de tiempo desde que empezó nuestro amor." />
+  <meta name="theme-color" content="#ffd0e5" />
+  <title>Desde que empezó nuestro amor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: #ffe6f0;
+    }
+
+    .timer-card {
+      background-color: #ffc5d3;
+      box-shadow: 0 18px 35px rgba(255, 105, 180, 0.35);
+    }
+
+    .envelope {
+      position: relative;
+      width: 260px;
+      height: 180px;
+      background: #ffc5d3;
+      border-radius: 18px;
+      box-shadow: 0 18px 35px rgba(255, 105, 180, 0.45);
+      overflow: hidden;
+      cursor: pointer;
+      --envelope-scale: 0.85;
+      transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+      transform: translateY(0) scale(var(--envelope-scale));
+      opacity: 0.5;
+    }
+
+    .envelope::before,
+    .envelope::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #ff8bb2, #ffc5d3);
+      clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 50%, 50% 100%, 0 50%);
+      opacity: 0.95;
+      transform-origin: top center;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+
+    .envelope::after {
+      background: radial-gradient(circle at 50% 0, #ffe6f0, transparent 60%);
+      opacity: 0.9;
+    }
+
+    .envelope-heart {
+      position: absolute;
+      left: 50%;
+      top: 46%;
+      transform: translate(-50%, -50%);
+      font-size: 2.2rem;
+      filter: drop-shadow(0 6px 10px rgba(148, 27, 87, 0.45));
+      transition: transform 0.5s ease, font-size 0.5s ease;
+    }
+
+    .envelope:hover {
+      transform: translateY(-6px) scale(calc(var(--envelope-scale) + 0.03));
+      box-shadow: 0 26px 45px rgba(255, 105, 180, 0.6);
+    }
+
+    .envelope-open::before {
+      transform: translateY(-60%) rotateX(180deg);
+      opacity: 0;
+    }
+
+    .envelope-open::after {
+      opacity: 0;
+    }
+
+    .envelope-open .envelope-heart {
+      top: 30%;
+      transform: translate(-50%, -50%);
+      font-size: 1.8rem;
+    }
+
+    .scroll-indicator {
+      animation: bounce-down 1.4s infinite;
+    }
+
+    @keyframes bounce-down {
+      0%,
+      20%,
+      50%,
+      80%,
+      100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(6px);
+      }
+      60% {
+        transform: translateY(3px);
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen px-4">
+  <main class="w-full mx-auto">
+    <!-- Section 1: Timer -->
+    <section
+      class="min-h-screen flex flex-col items-center justify-center text-center max-w-4xl mx-auto"
+      aria-label="Tiempo desde que empezó nuestro amor"
+    >
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[#da1161] mb-10 md:mb-12">
+        Desde que empezó nuestro amor 💕
+      </h1>
+
+      <section
+        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 justify-items-center"
+        aria-label="Contador de tiempo"
+      >
+      <article class="timer-card rounded-2xl px-4 py-3 md:px-5 md:py-4 flex flex-col items-center justify-center">
+        <p id="years" class="text-2xl md:text-3xl font-bold text-[#95013a] tabular-nums">00</p>
+        <p class="text-xs md:text-sm text-[#c02c5a] uppercase tracking-wide mt-1">Años</p>
+      </article>
+
+      <article class="timer-card rounded-2xl px-4 py-3 md:px-5 md:py-4 flex flex-col items-center justify-center">
+        <p id="months" class="text-2xl md:text-3xl font-bold text-[#95013a] tabular-nums">00</p>
+        <p class="text-xs md:text-sm text-[#c02c5a] uppercase tracking-wide mt-1">Meses</p>
+      </article>
+
+      <article class="timer-card rounded-2xl px-4 py-3 md:px-5 md:py-4 flex flex-col items-center justify-center">
+        <p id="days" class="text-2xl md:text-3xl font-bold text-[#95013a] tabular-nums">00</p>
+        <p class="text-xs md:text-sm text-[#c02c5a] uppercase tracking-wide mt-1">Días</p>
+      </article>
+
+      <article class="timer-card rounded-2xl px-4 py-3 md:px-5 md:py-4 flex flex-col items-center justify-center">
+        <p id="hours" class="text-2xl md:text-3xl font-bold text-[#95013a] tabular-nums">00</p>
+        <p class="text-xs md:text-sm text-[#c02c5a] uppercase tracking-wide mt-1">Horas</p>
+      </article>
+
+      <article class="timer-card rounded-2xl px-4 py-3 md:px-5 md:py-4 flex flex-col items-center justify-center">
+        <p id="minutes" class="text-2xl md:text-3xl font-bold text-[#95013a] tabular-nums">00</p>
+        <p class="text-xs md:text-sm text-[#c02c5a] uppercase tracking-wide mt-1">Minutos</p>
+      </article>
+
+      <article class="timer-card rounded-2xl px-4 py-3 md:px-5 md:py-4 flex flex-col items-center justify-center">
+        <p id="seconds" class="text-2xl md:text-3xl font-bold text-[#95013a] tabular-nums">00</p>
+        <p class="text-xs md:text-sm text-[#c02c5a] uppercase tracking-wide mt-1">Segundos</p>
+      </article>
+      </section>
+
+      <p class="mt-10 text-xs md:text-sm text-[#b34163]">
+        Contando desde el <span class="font-semibold">21 de abril de 2024</span>, para siempre.
+      </p>
+
+      <button
+        type="button"
+        onclick="document.getElementById('love-letter-section').scrollIntoView({ behavior: 'smooth' })"
+        class="mt-10 flex flex-col items-center text-[#b34163] text-xs md:text-sm focus:outline-none"
+      >
+        <span class="mb-1">Desliza para leer mi carta</span>
+        <span class="scroll-indicator text-2xl">↓</span>
+      </button>
+    </section>
+
+    <!-- Section 2: Love letter -->
+    <section
+      id="love-letter-section"
+      class="min-h-screen flex flex-col items-center justify-center px-2 text-center"
+      aria-label="Carta de amor"
+    >
+      <div class="max-w-xl mx-auto">
+        <p class="text-sm md:text-base text-[#b34163] mb-6">
+          Haz clic en la carta para abrirla. 💌
+        </p>
+
+        <div id="love-letter-trigger" class="envelope mx-auto mb-8" role="button" aria-expanded="false">
+          <span class="envelope-heart">💌</span>
+        </div>
+
+        <div
+          id="love-letter-content"
+          class="hidden bg-[#ffe6f0] border border-[#ffc5d3] rounded-2xl px-5 py-5 md:px-7 md:py-6 text-left text-sm md:text-base text-[#b34163] leading-relaxed shadow-lg space-y-3"
+        >
+          <p>Mi amor,</p>
+
+          <p>
+            Hoy quiero aprovechar para decirte algo que siento todos los días, pero que a veces no pongo en palabras.
+            Gracias. Gracias por estar en mi vida, por haber llegado a ella y por quedarte. No sabes cuánto lo agradezco
+            y cuánto lo agradeceré siempre.
+          </p>
+
+          <p>
+            Has estado conmigo en los momentos buenos, celebrando mis alegrías, y también en los momentos difíciles,
+            cuando más he necesitado apoyo. Tu compañía, tu paciencia y tu cariño han sido un refugio para mí. Tenerte
+            a mi lado me hace sentir fuerte, acompañado y profundamente querido.
+          </p>
+
+          <p>
+            Soy muy afortunado por tenerte, y lo seré siempre. No hay un solo día en que no piense lo bendecido que soy
+            por compartir mi vida contigo. Eres una persona increíble, con un corazón enorme, y me siento orgulloso de
+            poder llamarte mi Valentine.
+          </p>
+
+          <p>
+            Solo quiero que sepas que mi deseo más grande es hacerte feliz, cuidarte, apoyarte y estar para ti como tú
+            has estado para mí. Espero poder ser siempre el hombre correcto para ti, el que esté a la altura de tu amor,
+            el que te dé paz, seguridad y una sonrisa constante.
+          </p>
+
+          <p>Te amo profundamente, hoy y siempre. 💌❤️</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const startDate = new Date(2024, 3, 21, 0, 0, 0); // 21 de abril de 2024 (mes 3 porque enero es 0)
+
+      const yearsEl = document.getElementById('years');
+      const monthsEl = document.getElementById('months');
+      const daysEl = document.getElementById('days');
+      const hoursEl = document.getElementById('hours');
+      const minutesEl = document.getElementById('minutes');
+      const secondsEl = document.getElementById('seconds');
+      const loveLetterTrigger = document.getElementById('love-letter-trigger');
+      const loveLetterContent = document.getElementById('love-letter-content');
+      const loveLetterSection = document.getElementById('love-letter-section');
+      const envelopeHeart = document.querySelector('.envelope-heart');
+
+      function pad(value) {
+        return String(value).padStart(2, '0');
+      }
+
+      function updateTimer() {
+        const now = new Date();
+
+        let years = now.getFullYear() - startDate.getFullYear();
+        let months = now.getMonth() - startDate.getMonth();
+        let days = now.getDate() - startDate.getDate();
+        let hours = now.getHours() - startDate.getHours();
+        let minutes = now.getMinutes() - startDate.getMinutes();
+        let seconds = now.getSeconds() - startDate.getSeconds();
+
+        // Ajustes hacia atrás (préstamos) para que todos los valores sean positivos
+        if (seconds < 0) {
+          seconds += 60;
+          minutes -= 1;
+        }
+
+        if (minutes < 0) {
+          minutes += 60;
+          hours -= 1;
+        }
+
+        if (hours < 0) {
+          hours += 24;
+          days -= 1;
+        }
+
+        if (days < 0) {
+          const previousMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+          days += previousMonth.getDate();
+          months -= 1;
+        }
+
+        if (months < 0) {
+          months += 12;
+          years -= 1;
+        }
+
+        yearsEl.textContent = pad(years);
+        monthsEl.textContent = pad(months);
+        daysEl.textContent = pad(days);
+        hoursEl.textContent = pad(hours);
+        minutesEl.textContent = pad(minutes);
+        secondsEl.textContent = pad(seconds);
+      }
+
+      updateTimer();
+      setInterval(updateTimer, 1000);
+
+      // Smooth zoom effect for the envelope while scrolling into the love letter section
+      function updateEnvelopeOnScroll() {
+        if (!loveLetterSection || !loveLetterTrigger) return;
+
+        const rect = loveLetterSection.getBoundingClientRect();
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+
+        // When the top of the section is at the bottom of the viewport -> progress 0
+        // When the center of the section is in the middle of the viewport -> progress 1
+        const start = viewportHeight;
+        const end = viewportHeight * 0.3;
+        let progress = (start - rect.top) / (start - end);
+        progress = Math.min(1, Math.max(0, progress));
+
+        const scale = 0.85 + 0.3 * progress; // 0.85 -> 1.15
+        const opacity = 0.5 + 0.5 * progress; // 0.5 -> 1
+
+        loveLetterTrigger.style.setProperty('--envelope-scale', scale.toFixed(3));
+        loveLetterTrigger.style.opacity = opacity.toFixed(3);
+      }
+
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            updateEnvelopeOnScroll();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+
+      window.addEventListener('resize', updateEnvelopeOnScroll);
+      updateEnvelopeOnScroll();
+
+      if (loveLetterTrigger && loveLetterContent) {
+        loveLetterTrigger.addEventListener('click', () => {
+          const isHidden = loveLetterContent.classList.contains('hidden');
+          if (isHidden) {
+            loveLetterContent.classList.remove('hidden');
+            loveLetterTrigger.setAttribute('aria-expanded', 'true');
+            loveLetterTrigger.classList.add('envelope-open');
+            if (envelopeHeart) envelopeHeart.textContent = '❤️';
+          } else {
+            loveLetterContent.classList.add('hidden');
+            loveLetterTrigger.setAttribute('aria-expanded', 'false');
+            loveLetterTrigger.classList.remove('envelope-open');
+            if (envelopeHeart) envelopeHeart.textContent = '💌';
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
+
